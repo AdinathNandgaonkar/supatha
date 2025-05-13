@@ -1,0 +1,2 @@
+/Users/adinathnandgaonkar/Documents/vs_code_projects/supatha_shuttles/android/app/.cxx/Debug/335w6q2a/x86_64/CMakeFiles/edit_cache.dir
+/Users/adinathnandgaonkar/Documents/vs_code_projects/supatha_shuttles/android/app/.cxx/Debug/335w6q2a/x86_64/CMakeFiles/rebuild_cache.dir
