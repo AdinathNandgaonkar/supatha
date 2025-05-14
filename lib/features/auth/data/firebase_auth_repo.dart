@@ -78,7 +78,13 @@ class FirebaseAuthRepo implements AuthRepo {
       // Sign out from Google (if signed in)
       if (await googleSignIn.isSignedIn()) {
         await googleSignIn.signOut();
-        await googleSignIn.disconnect();
+
+        try {
+          await googleSignIn
+              .disconnect(); // Attempt but don't fail if it errors
+        } catch (e) {
+          print('Non-fatal disconnect error: $e');
+        }
       }
     } catch (e) {
       print('Logout error: $e');

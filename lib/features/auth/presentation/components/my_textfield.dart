@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supatha_shuttles/themes/light_mode.dart';
 
 class MyTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -30,7 +31,9 @@ class MyTextField extends StatelessWidget {
         ),
         hintText: hintText,
         hintStyle: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
+          color: Theme.of(context).brightness == Brightness.light
+              ? Theme.of(context).colorScheme.inversePrimary
+              : Theme.of(context).colorScheme.tertiary,
         ),
         fillColor: Theme.of(context).colorScheme.secondary,
         filled: true,

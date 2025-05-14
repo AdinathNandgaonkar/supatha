@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supatha_shuttles/themes/light_mode.dart';
 
 class MyButton extends StatelessWidget {
   final void Function()? onTap;
@@ -13,16 +14,21 @@ class MyButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(25),
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.tertiary,
+            color: Theme.of(context).colorScheme.secondary,
             borderRadius: BorderRadius.circular(12)),
         child: Center(
-            child: Text(
-          text,
-          style: TextStyle(
+          child: Text(
+            text,
+            style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 16,
-              color: Theme.of(context).colorScheme.primary),
-        )),
+              color:
+                  Theme.of(context).colorScheme.brightness == Brightness.light
+                      ? Theme.of(context).colorScheme.inversePrimary
+                      : Theme.of(context).colorScheme.tertiary,
+            ),
+          ),
+        ),
       ),
     );
   }

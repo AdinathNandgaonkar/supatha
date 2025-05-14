@@ -137,7 +137,11 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(
                     height: 25,
                   ),
-                  const Text("Or sign in with"),
+                  Text(
+                    "Or sign in with",
+                    style:
+                        TextStyle(color: Theme.of(context).colorScheme.primary),
+                  ),
                   const SizedBox(
                     height: 15,
                   ),
