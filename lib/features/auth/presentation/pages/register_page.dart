@@ -14,30 +14,30 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final nameController = TextEditingController();
-  final surnameController = TextEditingController();
+  final firstnameController = TextEditingController();
+  final lastnameController = TextEditingController();
   final emailController = TextEditingController();
   final pwController = TextEditingController();
   final confirmPwController = TextEditingController();
 
   //register button pressed
   void register() {
-    final String name = nameController.text;
-    final String surname = surnameController.text;
-    final String email = emailController.text;
-    final String pw = pwController.text;
-    final String confirmPw = confirmPwController.text;
+    final String firstname = firstnameController.text.trim();
+    final String lastname = lastnameController.text.trim();
+    final String email = emailController.text.trim();
+    final String pw = pwController.text.trim();
+    final String confirmPw = confirmPwController.text.trim();
 
     //auth cubit
     final authCubit = context.read<AuthCubit>();
 
-    if (name.isNotEmpty &&
-        surname.isNotEmpty &&
+    if (firstname.isNotEmpty &&
+        lastname.isNotEmpty &&
         email.isNotEmpty &&
         pw.isNotEmpty &&
         confirmPw.isNotEmpty) {
       if (pw == confirmPw) {
-        authCubit.register(name, email, pw);
+        authCubit.register(firstname, lastname, email, pw);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Passwords don't match")));
@@ -50,8 +50,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   void dispose() {
-    nameController.dispose();
-    surnameController.dispose();
+    firstnameController.dispose();
+    lastnameController.dispose();
     emailController.dispose();
     pwController.dispose();
     confirmPwController.dispose();
@@ -92,8 +92,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     children: [
                       Expanded(
                         child: MyTextField(
-                          controller: nameController,
-                          hintText: "Name",
+                          controller: firstnameController,
+                          hintText: "First Name",
                           obscureText: false,
                         ),
                       ),
@@ -102,8 +102,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       Expanded(
                         child: MyTextField(
-                          controller: surnameController,
-                          hintText: "Surname",
+                          controller: lastnameController,
+                          hintText: "Last Name",
                           obscureText: false,
                         ),
                       ),

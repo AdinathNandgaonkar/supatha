@@ -1,5 +1,6 @@
 // FIREBASE - Backend
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supatha_shuttles/features/auth/domain/entities/app_user.dart';
 import 'package:supatha_shuttles/features/auth/domain/repos/auth_repo.dart';
@@ -29,13 +30,15 @@ class FirebaseAuthRepo implements AuthRepo {
   //REGISTER: Email & Password
   @override
   Future<AppUser?> registerWithEmailPassword(
-      String name, String email, String password) async {
+      String firstname, String lastname, String email, String password) async {
     try {
       //Attempt sign in
       UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
       //create user
       AppUser user = AppUser(uid: userCredential.user!.uid, email: email);
+      //add user details
+
       return user;
     } catch (e) {
       throw Exception('Registration failed: $e');

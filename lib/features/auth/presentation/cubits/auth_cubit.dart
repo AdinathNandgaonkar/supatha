@@ -1,5 +1,6 @@
 //Cubits are responsible for state management (data on screen)
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supatha_shuttles/features/auth/domain/entities/app_user.dart';
 import 'package:supatha_shuttles/features/auth/domain/repos/auth_repo.dart';
@@ -49,14 +50,23 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   //register with email
-  Future<void> register(String name, String email, String password) async {
+  Future<void> register(
+      String firstname, String lastname, String email, String password) async {
     try {
       emit(AuthLoading());
-      final user =
-          await authRepo.registerWithEmailPassword(name, email, password);
+      final user = await authRepo.registerWithEmailPassword(
+          firstname, lastname, email, password);
 
       if (user != null) {
         _currentUser = user;
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'firstname': firstname,
+          'lastname': lastname,
+          'email': email,
+          'password': password,
+          'createdAt': Timestamp.now(),
+        });
+
         emit(Authenticated(user));
       } else {
         emit(Unauthenticated());
