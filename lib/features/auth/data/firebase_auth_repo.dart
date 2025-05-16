@@ -15,13 +15,16 @@ class FirebaseAuthRepo implements AuthRepo {
   @override
   Future<AppUser?> loginWithEmailPassword(String email, String password) async {
     try {
-      //Attempt sign in
       UserCredential userCredential = await firebaseAuth
           .signInWithEmailAndPassword(email: email, password: password);
 
-      //Create user
-      AppUser user = AppUser(uid: userCredential.user!.uid, email: email);
-      return user;
+      final uid = userCredential.user!.uid;
+      final doc =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+      if (!doc.exists) throw Exception("User data not found in database");
+
+      return AppUser.fromJson({...doc.data()!, 'uid': uid});
     } catch (e) {
       throw Exception('Login failed: $e');
     }
@@ -30,16 +33,28 @@ class FirebaseAuthRepo implements AuthRepo {
   //REGISTER: Email & Password
   @override
   Future<AppUser?> registerWithEmailPassword(
-      String firstname, String lastname, String email, String password) async {
+      String firstName, String lastName, String email, String password) async {
     try {
-      //Attempt sign in
       UserCredential userCredential = await firebaseAuth
           .createUserWithEmailAndPassword(email: email, password: password);
-      //create user
-      AppUser user = AppUser(uid: userCredential.user!.uid, email: email);
-      //add user details
 
-      return user;
+      final uid = userCredential.user!.uid;
+
+      final appUser = AppUser(
+        uid: uid,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        password: password,
+        createdAt: DateTime.now(),
+      );
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .set(appUser.toJson());
+
+      return appUser;
     } catch (e) {
       throw Exception('Registration failed: $e');
     }
@@ -66,9 +81,16 @@ class FirebaseAuthRepo implements AuthRepo {
 
     //No logged in user
     if (firebaseUser == null) return null;
-
+    final displayName = firebaseUser.displayName;
+    final parts = displayName?.split(' ');
+    final firstName = parts!.isNotEmpty ? parts[0] : '';
+    final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
     //Logged in user exists
-    return AppUser(uid: firebaseUser.uid, email: firebaseUser.email!);
+    return AppUser(
+        uid: firebaseUser.uid,
+        email: firebaseUser.email!,
+        firstName: firstName,
+        lastName: lastName);
   }
 
   //LOGOUT
@@ -109,40 +131,47 @@ class FirebaseAuthRepo implements AuthRepo {
   @override
   Future<AppUser?> signInWithGoogle() async {
     try {
-      //begin interactive sign in process
       final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
-
-      //user cancelled sign in
       if (gUser == null) return null;
 
-      //obtain auth details
-      final GoogleSignInAuthentication gAuth = await gUser.authentication;
+      final gAuth = await gUser.authentication;
 
-      //create credential for user
       final credential = GoogleAuthProvider.credential(
         accessToken: gAuth.accessToken,
         idToken: gAuth.idToken,
       );
 
-      //sign in with credentials
-      UserCredential userCredential =
+      final userCredential =
           await firebaseAuth.signInWithCredential(credential);
+      final user = userCredential.user;
+      if (user == null) return null;
 
-      //firebase user
-      final firebaseUser = userCredential.user;
+      final docRef =
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
+      final doc = await docRef.get();
 
-      //user cancelled sign in process
-      if (firebaseUser == null) return null;
+      if (!doc.exists) {
+        final displayName = user.displayName ?? '';
+        final parts = displayName.split(' ');
+        final firstName = parts.isNotEmpty ? parts[0] : '';
+        final lastName = parts.length > 1 ? parts.sublist(1).join(' ') : '';
 
-      AppUser appUser = AppUser(
-        uid: firebaseUser.uid,
-        email: firebaseUser.email ?? '',
-      );
+        final newUser = AppUser(
+          uid: user.uid,
+          email: user.email ?? '',
+          firstName: firstName,
+          lastName: lastName,
+          password: null,
+          createdAt: DateTime.now(),
+        );
 
-      return appUser;
+        await docRef.set(newUser.toJson());
+        return newUser;
+      } else {
+        return AppUser.fromJson({...doc.data()!, 'uid': user.uid});
+      }
     } catch (e) {
-      // ignore: avoid_print
-      print(e);
+      print("Google Sign-In Error: $e");
       return null;
     }
   }

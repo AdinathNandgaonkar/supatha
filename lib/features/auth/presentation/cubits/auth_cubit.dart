@@ -59,14 +59,6 @@ class AuthCubit extends Cubit<AuthState> {
 
       if (user != null) {
         _currentUser = user;
-        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
-          'firstname': firstname,
-          'lastname': lastname,
-          'email': email,
-          'password': password,
-          'createdAt': Timestamp.now(),
-        });
-
         emit(Authenticated(user));
       } else {
         emit(Unauthenticated());

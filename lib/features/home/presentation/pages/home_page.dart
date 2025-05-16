@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supatha_shuttles/features/auth/presentation/components/theme_button.dart';
 import 'package:supatha_shuttles/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:supatha_shuttles/features/auth/presentation/cubits/theme_cubit.dart';
 import 'package:supatha_shuttles/features/home/presentation/nav_bar/nav_bar_sizes.dart';
 
 class HomePage extends StatefulWidget {
@@ -31,6 +33,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
+        leading: const ThemeSelectorButton(),
         backgroundColor: Theme.of(context).colorScheme.tertiary,
         actions: [
           IconButton(
@@ -73,7 +76,7 @@ class _HomePageState extends State<HomePage> {
             ),
             GButton(
               icon: Icons.account_circle_outlined,
-              text: "  Account",
+              text: "  Profile",
               textStyle: optionStyle,
             ),
           ],
