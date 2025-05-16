@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supatha_shuttles/features/auth/presentation/components/theme_button.dart';
 import 'package:supatha_shuttles/features/auth/presentation/cubits/auth_cubit.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:supatha_shuttles/features/auth/presentation/cubits/theme_cubit.dart';
 import 'package:supatha_shuttles/features/home/presentation/nav_bar/nav_bar_sizes.dart';
 
 class HomePage extends StatefulWidget {
